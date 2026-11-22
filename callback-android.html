@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LISA Android - Autorización bancaria</title>
+</head>
+<body>
+    <h2>Autorización bancaria completada</h2>
+    <p>Volviendo a LISA Android...</p>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const state = params.get("state");
+        const error = params.get("error");
+
+        if (error) {
+            document.body.innerHTML =
+                "<h2>Error de autorización</h2><p>" + error + "</p>";
+        } else if (code && state) {
+            window.location.href =
+                "lisa://callback?code=" +
+                encodeURIComponent(code) +
+                "&state=" +
+                encodeURIComponent(state);
+        } else {
+            document.body.innerHTML =
+                "<h2>No se recibió el código de autorización.</h2>";
+        }
+    </script>
+</body>
+</html>
