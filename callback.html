@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LISA · Retorno de autorización bancaria</title>
+<style>
+:root{color-scheme:dark}body{margin:0;background:#11151c;color:#edf2f7;font:16px/1.55 Segoe UI,Arial,sans-serif}
+main{max-width:780px;margin:8vh auto;padding:28px;background:#1b222d;border-radius:14px}
+h1{margin-top:0}p{color:#b8c4d2}.notice{padding:14px;background:#273448;border-radius:8px}
+textarea{box-sizing:border-box;width:100%;min-height:110px;background:#101722;color:#edf2f7;border:1px solid #52647a;border-radius:8px;padding:12px;overflow-wrap:anywhere}
+button{background:#6aa9ff;color:#0d1420;border:0;border-radius:7px;padding:10px 16px;font-weight:700;cursor:pointer;margin-top:10px}
+.small{font-size:13px;color:#9aa8b8}
+</style></head><body><main>
+<h1>LISA · Autorización bancaria</h1>
+<div class="notice">Si has llegado aquí después de autorizar ABANCA, el retorno se ha recibido en la página correcta.</div>
+<p>Copia la dirección completa que aparece en la barra del navegador y pégala en LISA, en el cuadro «Completar autorización». Debe incluir los parámetros <code>code</code> y <code>state</code>.</p>
+<textarea id="returnUrl" readonly aria-label="URL completa de retorno"></textarea><br>
+<button id="copy">Copiar URL completa</button>
+<p id="status" class="small"></p>
+<p class="small">No compartas esta dirección ni la captura de esta página: contiene un código temporal de autorización. Cierra esta pestaña después de completar el proceso en LISA.</p>
+<script>
+const box=document.getElementById('returnUrl');
+box.value=window.location.href;
+const params=new URLSearchParams(window.location.search);
+const status=document.getElementById('status');
+if(params.has('error')) status.textContent='El banco/proveedor devolvió un error: '+(params.get('error_description')||params.get('error'));
+else if(params.has('code') && params.has('state')) status.textContent='Código y state recibidos. Vuelve a LISA y pega la URL completa.';
+else status.textContent='No se han encontrado ambos parámetros code y state. Comprueba que has completado la autorización bancaria y que esta es la URL de retorno correcta.';
+document.getElementById('copy').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText(box.value);status.textContent='URL copiada. Pégala inmediatamente en LISA y no la compartas.';}
+ catch(e){box.focus();box.select();status.textContent='Pulsa Ctrl+C para copiar la URL seleccionada.';}
+});
+</script></main></body></html>
